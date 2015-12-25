@@ -1,15 +1,44 @@
-## Put comments here that give an overall description of what your
-## functions do
+# Peer Exercise - R Course 
 
-## Write a short comment describing this function
+# Inverse a matrix efficiently - with ability to cache its inverse without recalculating it
+# makeCacheMatrix - Builds the matrix access for the inverse on need only
+# cacheSolve - Use the inverse efficiently - build if necessary, take from cache if exists 
+
+# Build a matrix API supporting a cached inversed matrix 
+# Input: x = Given matrix is inversible 
+# Output: List of 4 accessor functions - get/set for matrix, and get/set for its inverse 
 
 makeCacheMatrix <- function(x = matrix()) {
-
+  inverse <- NULL
+  # Matrix accessors 
+  setMatrix <- function(mat) {
+    x <<- mat
+    inverse <<- NULL
+  }
+  getMatrix <- function() x
+  # Inverse accessors 
+  setInverse <- function(inv) inverse <<- inv
+  getInverse <- function() inverse
+  list(setMatrix = setMatrix, 
+       getMatrix = getMatrix,
+       setInverse = setInverse,
+       getInverse = getInverse)
 }
 
-
-## Write a short comment describing this function
+# Inverse a matrix efficently using cache if such exists
+# Input: x = An invertible matrix 
+# Output: The inverse of x 
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  inv <- x$getInverse()
+  # Cahced value exists - use it 
+  if(!is.null(inv)) {
+    message("Getting inverse from cached data")
+    return(inv)
+  }
+  # No cahced value exists - "compute" and cache for future 
+  mat <- x$getMatrix()
+  inv <- solve(mat)
+  x$setInverse(inv)
+  inv
 }
